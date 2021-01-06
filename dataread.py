@@ -8,24 +8,24 @@ def standarize(series):
     return (series - np.mean(series)) / np.std(series)
 
 def add_indexes(df):
-  ID = np.arange(len(df))
-  label = df.index.values
-  multi_index = list(zip(ID, label))
-  index = pd.MultiIndex.from_tuples(multi_index, names = ["ID", "LABEL"])
-  return df.set_index(index)
+    ID = np.arange(len(df))
+    label = df.index.values
+    multi_index = list(zip(ID, label))
+    index = pd.MultiIndex.from_tuples(multi_index, names = ["ID", "LABEL"])
+    return df.set_index(index)
 
 def preprocess(df):
-  '''
-  Normalizes the dataframe and adds indexes
-  '''
-  df = add_indexes(df)
-  return df.apply(normalize, axis = 1)
+    '''
+    Normalizes the dataframe and adds indexes
+    '''
+    df = add_indexes(df)
+    return df.apply(normalize, axis = 1)
 
 def get_train_df():
-  '''
-  Reads local csv file with training data
-  '''
-  return pd.read_csv('exoTrain.csv', index_col = 0)
+    '''
+    Reads local csv file with training data
+    '''
+    return pd.read_csv('exoTrain.csv', index_col = 0)
 
 def get_test_df():
-  return pd.read_csv('exoTest.csv', index_col = 0)
+    return pd.read_csv('exoTest.csv', index_col = 0)
