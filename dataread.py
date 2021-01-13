@@ -14,12 +14,21 @@ def add_indexes(df):
     index = pd.MultiIndex.from_tuples(multi_index, names = ["ID", "LABEL"])
     return df.set_index(index)
 
-def preprocess(df):
+def preprocess(df, preprocess = 'normalize'):
     '''
-    Normalizes the dataframe and adds indexes
+    Preprocesses the dataframe according to the preprocess arg and adds indexes.
+    Args:
+        df: dataframe to preprocess
+        preprocess: 'normalize' or 'standarize' 
     '''
     df = add_indexes(df)
-    return df.apply(normalize, axis = 1)
+
+    if preprocess == 'normalize':
+        return df.apply(normalize, axis = 1)
+    elif preprocess == 'standarize':
+        return df.apply(standarize, axis = 1)
+    else:
+        return df
 
 def get_train_df():
     '''

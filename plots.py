@@ -6,6 +6,10 @@ import seaborn as sns
 def printsomething():
   print("AAAA")
 
+def plot_fourier_transform(ft):
+    n = len(ft)
+    plt.plot(np.arange(n), ft)
+
 def plot_row(df: pd.DataFrame, row_index, degrees = [1, 4, 10]):
     '''
     Plots info about one row of a dataframe.
@@ -45,17 +49,9 @@ def plot_histograms(df):
         plt.title(title)
         plt.show()
 
-    print("Mean values")
-    plot_histogram(df['Mean'], title = 'All data')
-    plot_histogram(df[df['Label'] == 2]['Mean'], title = 'Exoplanet exists')
-    plot_histogram(df[df['Label'] == 1]['Mean'], title = 'Exoplanet doesn\'t exist')
-
-    print("Standart deviation")
-    plot_histogram(df['Standard deviation'], title = 'All data')
-    plot_histogram(df[df['Label'] == 2]['Standard deviation'], title = 'Exoplanet exists')
-    plot_histogram(df[df['Label'] == 1]['Standard deviation'], title = 'Exoplanet doesn\'t exist')
-
-    print("Variance")
-    plot_histogram(df['Variance'], title = 'All data')
-    plot_histogram(df[df['Label'] == 2]['Variance'], title = 'Exoplanet exists')
-    plot_histogram(df[df['Label'] == 1]['Variance'], title = 'Exoplanet doesn\'t exist')
+    for column in df.columns:
+        if column != 'Label':
+            print(column)
+            plot_histogram(df[column], title = 'All data')
+            plot_histogram(df[df['Label'] == 2][column], title = 'Exoplanet exists')
+            plot_histogram(df[df['Label'] == 1][column], title = 'Exoplanet doesn\'t exist')
