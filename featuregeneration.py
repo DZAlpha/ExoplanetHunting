@@ -49,9 +49,9 @@ def get_df(normalized_df = None, standarized_df = None):
     std_dst: distance for threshold argument for finding peaks in fourier transform. Used in get_number_of_spikes
     '''
     if normalized_df is None:
-        normalized_df = preprocess_normalize(get_train_df())
+        normalized_df = preprocess(get_train_df())
     if standarized_df is None:
-        standarized_df = preprocess_standarize(get_train_df())
+        standarized_df = preprocess(get_train_df(), preprocess='standarize')
     features = pd.DataFrame()
     features['Label'] = normalized_df.index.get_level_values(1)
     features['Standard deviation'] = np.array(normalized_df.apply(lambda row: row.std(), axis = 1))
