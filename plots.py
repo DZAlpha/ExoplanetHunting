@@ -10,7 +10,7 @@ def plot_fourier_transform(ft):
     n = len(ft)
     plt.plot(np.arange(n), ft)
 
-def plot_row(df: pd.DataFrame, row_index, degrees = [1, 4, 10]):
+def plot_row(df: pd.DataFrame, row_index, degrees = [1, 4, 10], title = ""):
     '''
     Plots info about one row of a dataframe.
     Args:
@@ -28,7 +28,7 @@ def plot_row(df: pd.DataFrame, row_index, degrees = [1, 4, 10]):
     plt.figure(figsize = (10, 5))
     plt.ylabel('Flux')
     plt.xlabel('Time')
-
+    plt.title(title)
     plt.plot(xs, df.iloc[row_index])
 
     for degree in degrees:
