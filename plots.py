@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from BollingerBand import *
 
 def printsomething():
   print("AAAA")
@@ -55,3 +56,18 @@ def plot_histograms(df):
             plot_histogram(df[column], title = 'All data')
             plot_histogram(df[df['Label'] == 2][column], title = 'Exoplanet exists')
             plot_histogram(df[df['Label'] == 1][column], title = 'Exoplanet doesn\'t exist')
+            
+def plot_band(series, span = 20, k=3):
+	''' Plots Bollinger band for series'''
+
+    upper,lower,upper_outliers,lower_outliers, moving_a = Bollinger_Bond(series, span, k)
+    plt.figure(figsize = (15, 5))
+    
+    x_ = np.arange(1,len(series) + 1)
+
+    plt.plot(x_, upper, c='green')
+    plt.plot(x_, lower, c='blue')
+    plt.plot(x_, moving_a, c='black')
+    plt.scatter(np.where(upper_outliers), series[upper_outliers], c = 'red', s=70)
+    plt.scatter(np.where(lower_outliers), series[lower_outliers], c='red',s=70)
+    plt.scatter(x_, series, c='orange', s=20)
