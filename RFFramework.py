@@ -30,7 +30,7 @@ class RandomForestFramework:
                                   min_weight_fraction_leaf = min_weight_fraction_leaf, max_features =max_features, bootstrap = bootstrap)      
     
     
-    def data_from_df(self, df, targets_name = 'LABEL', targets_from_index = True):
+    def data_from_df(self, df, targets_name = 'Label', targets_from_index = False):
         '''
         Obtaining classes and samples from dataframe
         
@@ -39,14 +39,14 @@ class RandomForestFramework:
             y = df.index.get_level_values(targets_name).to_numpy()
             X = df.reset_index(drop=True).to_numpy()
         else:
-            y = df[target_name].to_numpy()
-            X = df.drop(target_name).to_numpy()
+            y = df[targets_name].to_numpy()
+            X = df.drop(targets_name, axis=1).to_numpy()
         return X, y
         
-    def fit(self, targets_name = 'LABEL', targets_from_index = True):
+    def fit(self, targets_name = 'Label', targets_from_index = False):
         '''
         Getting data from our dataframe and fitting it
-            targets_from_index == True, because we'll likely have our labels in some kind of multiindex
+            targets_from_index == False, because we'll likely not have our labels in some kind of an multi index
         '''
         
         X, y = self.data_from_df(self.df, targets_name = targets_name, targets_from_index = targets_from_index)
@@ -54,7 +54,7 @@ class RandomForestFramework:
         self.RandomForest.fit(X,y)
         
         
-    def predict_df(self, df, targets_name = 'LABEL', targets_from_index = True):
+    def predict_df(self, df, targets_name = 'Label', targets_from_index = False):
         X, y = self.data_from_df(df, targets_name = targets_name, targets_from_index = targets_from_index)
         return self.predict(X)
         
