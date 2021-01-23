@@ -12,7 +12,7 @@ def std(series, span):
     return series.rolling(span).std()
 
 
-def Bollinger_Bond(series,span = 20, k = 3):
+def bollinger_band(series,span = 20, k = 3):
     moving_a = MA(series, span)
     std_ = std(series, span)
     upper_bound = moving_a + k*std_
