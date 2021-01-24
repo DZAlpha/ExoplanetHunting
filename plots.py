@@ -38,7 +38,7 @@ def plot_histograms(df):
     '''
     Plots histograms for exoplanet dataframe with columns: 'Mean', 'Standard deviation', 'Variance'
     Args:
-    df: 
+    df: df to get values from
     '''
 
     def plot_histogram(column, title):

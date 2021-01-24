@@ -6,22 +6,25 @@ import scipy
 from plots import plot_row
 
 class FourierTransform:
-    def __init__(self, df, detrend = True):
+    def __init__(self, df, detrend = True, left_index = 10):
         '''
         Calculates the df where each row is filled with absolute values of Discrete Fourier transform
         and saves it to self.fourier_df. 
         Args:
         df: dataframe to calculate Discrete Fourier transform form. FFT is applied to each row. 
         detrend: bool deciding if original df rows should be detrended using scipy.signal.detrend
+        left_index: index of the first left element that will be considered in calculating std and mean. 
         '''
         self.original_df = df.copy()
         self.fourier_df = df.copy()
-        self.spikes = self.std = self.mean = None
         for i in range(len(df)):
             if detrend:
                 self.fourier_df.iloc[i] = np.absolute(np.fft.fft(scipy.signal.detrend(self.fourier_df.iloc[i])))
             else:
                 self.fourier_df.iloc[i] = np.absolute(np.fft.fft(self.fourier_df.iloc[i]))
+        self.calculate_std(left_index = left_index)
+        self.calculate_mean(left_index = left_index)
+        self.calculate_no_spikes()
                 
         
     def calculate_no_spikes(self):
@@ -31,38 +34,25 @@ class FourierTransform:
         Returns:
         Ndarray filled with number of spikes.
         '''
-        if self.spikes is None:
-            self.spikes = np.array(self.fourier_df.apply(lambda row: self.__spikes_in_series(row), axis = 1))
-        return self.spikes
+        self.spikes = np.array(self.fourier_df.apply(lambda row: self.__spikes_in_series(row), axis = 1))
     
-    def calculate_std(self, left_index = 10, overwrite = True):
+    def calculate_std(self, left_index = 10):
         '''
         Calculates std of every row of self.fourier_df and saves it to self.std
         Args:
         left_index: index of the first left element that will be considered. 
-        overwrite: decides whether or not overwrite self.std with newly calculated std. If self.std is None
-            overwrite will happen no matter what the value of this argument is.
         '''
-        if not overwrite and self.std is not None:
-            return self.std
         right_index = int(self.fourier_df.shape[1]/2)
         self.std = np.array(self.fourier_df.apply(lambda row: np.std(row[left_index:right_index]), axis = 1))
-        return self.std
         
-    def calculate_mean(self, left_index = 10, overwrite = True):
+    def calculate_mean(self, left_index = 10):
         '''
         Calculates mean of every row of self.fourier_df and saves it to self.mean
         Args:
         left_index: index of the first left element that will be considered. 
-        overwrite: decides whether or not overwrite self.mean with newly calculated mean. If self.mean is None
-            overwrite will happen no matter what the value of this argument is.
         '''
-        if not overwrite and self.mean is not None:
-            return self.mean
         right_index = int(self.fourier_df.shape[1]/2)
         self.mean = np.array(self.fourier_df.apply(lambda row: np.mean(row[left_index:right_index]), axis = 1))
-        return self.mean
-        
     
     def __spikes_in_series(self, series, threshold_type = 'mean', threshold_multiplier = 1.9, left_index = 10):
         '''

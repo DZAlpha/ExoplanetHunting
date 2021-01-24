@@ -5,7 +5,7 @@ import seaborn as sns
 import scipy
 from scipy import signal
 from dataread import preprocess, get_train_df
-
+from BollingerBand import bollinger_band
 
 # def get_spikes_feature(train_df,
 #                        threshold_type = 'mean', 
@@ -57,8 +57,25 @@ def get_df(normalized_df = None, standarized_df = None, dft = None):
     features['Standard deviation'] = np.array(normalized_df.apply(lambda row: row.std(), axis = 1))
     features['Variance'] = np.array(normalized_df.apply(lambda row: row.var(), axis = 1))
     features['Mean'] = np.array(normalized_df.apply(lambda row: row.mean(), axis = 1))
+    features['Outliers'] = outliers(normalized_df, span = 20, k = 3)
     if dft is not None:
-        features['Fourier std'] = dft.calculate_std()
-        features['Fourier mean'] = dft.calculate_mean()
-        features['Fourier spikes'] = dft.calculate_no_spikes()
+        features['Fourier std'] = dft.std
+        features['Fourier mean'] = dft.mean
+        features['Fourier spikes'] = dft.spikes
+        features['Fourier outliers from BBand'] = fourier_outliers(dft.fourier_df, right_index = int(dft.fourier_df.shape[1]/2))
+        
     return features
+
+
+def fourier_outliers(fourier_df, right_index, span = 20, k = 3.5):
+    '''
+    Calculates outliers using bollinger_band
+    Args:
+    fourier_df: df to use
+    right_index: index up to which elements from the row will be considered
+    span, k: parameters for bollinger_band
+    '''
+    return np.array(fourier_df.apply(lambda row: len(row[:right_index][bollinger_band(row[:right_index], span = span, k = k)[2]]), axis = 1))
+
+def outliers(df, span = 20, k = 3):
+    return np.array(df.apply(lambda row: len(row[bollinger_band(row, span = span, k = k)[3]]), axis = 1)) 
