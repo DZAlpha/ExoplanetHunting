@@ -6,6 +6,7 @@ import scipy
 from scipy import signal
 from dataread import preprocess, get_train_df
 from BollingerBand import bollinger_band
+from fourier import FourierTransform
 
 # def get_spikes_feature(train_df,
 #                        threshold_type = 'mean', 
@@ -57,7 +58,7 @@ def get_df(normalized_df = None, standarized_df = None, dft = None):
     features['Standard deviation'] = np.array(normalized_df.apply(lambda row: row.std(), axis = 1))
     features['Variance'] = np.array(normalized_df.apply(lambda row: row.var(), axis = 1))
     features['Mean'] = np.array(normalized_df.apply(lambda row: row.mean(), axis = 1))
-    features['Outliers'] = outliers(normalized_df, span = 20, k = 3)
+    features['Outliers'] = np.array(self.df.apply(lambda row: n_outliers(row), axis=1))
     if dft is not None:
         features['Fourier std'] = dft.std
         features['Fourier mean'] = dft.mean
@@ -68,14 +69,35 @@ def get_df(normalized_df = None, standarized_df = None, dft = None):
 
 
 def fourier_outliers(fourier_df, right_index, span = 20, k = 3.5):
-    '''
-    Calculates outliers using bollinger_band
-    Args:
-    fourier_df: df to use
-    right_index: index up to which elements from the row will be considered
-    span, k: parameters for bollinger_band
-    '''
     return np.array(fourier_df.apply(lambda row: len(row[:right_index][bollinger_band(row[:right_index], span = span, k = k)[2]]), axis = 1))
 
-def outliers(df, span = 20, k = 3):
-    return np.array(df.apply(lambda row: len(row[bollinger_band(row, span = span, k = k)[3]]), axis = 1)) 
+def n_outliers(row, span = 20, k = 3):
+    return len(row[bollinger_band(row, span = span, k = k)[3]])    
+    
+class Features:
+    def __init__(self, df, standarized_df):
+        self.df = df
+        self.standarized_df = standarized_df
+        self.dft = FourierTransform(standarized_df, detrend = False)
+        
+        self.features = pd.DataFrame()
+        self.features['Label'] = df.index.get_level_values(1)
+        self.features['Standard deviation'] = np.array(self.df.apply(lambda row: row.std(), axis = 1))
+        self.features['Variance'] = np.array(self.df.apply(lambda row: row.var(), axis = 1))
+        self.features['Mean'] = np.array(self.df.apply(lambda row: row.mean(), axis = 1))
+        self.features['Outliers'] = np.array(self.df.apply(lambda row: n_outliers(row), axis=1))
+        
+        self.features['Fourier std'] = self.dft.std
+        self.features['Fourier mean'] = self.dft.mean
+        self.features['Fourier spikes'] = self.dft.spikes
+        self.features['Fourier outliers from BBand'] = fourier_outliers(self.dft.fourier_df, right_index = int(self.dft.fourier_df.shape[1]/2))
+        
+    def add_feature(self, fun, name, stand=False):
+        if stand:
+            self.features[name] = np.array(self.standarized_df.apply(lambda row: fun(row), axis=1))
+        else: 
+            self.features[name] = np.array(self.df.apply(lambda row: fun(row), axis=1))
+    
+    def drop_feature(self, name):
+        self.features = self.features.drop(columns=[name])
+                 
