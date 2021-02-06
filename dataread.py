@@ -22,7 +22,7 @@ def preprocess(df, preprocess = 'normalize'):
         preprocess: 'normalize' or 'standarize' 
     '''
     df = add_indexes(df)
-
+    df = df.rename(lambda x: int(x[5:]), axis=1)
     if preprocess == 'normalize':
         return df.apply(normalize, axis = 1)
     elif preprocess == 'standarize':
