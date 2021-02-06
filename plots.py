@@ -54,6 +54,7 @@ def plot_histograms(df):
             plot_histogram(df[df['Label'] == 2][column], title = 'Exoplanet exists')
             plot_histogram(df[df['Label'] == 1][column], title = 'Exoplanet doesn\'t exist')
             
+            
 def plot_band(series, span = 20, k=3, scatter = True, figsize = (15, 5)):
     ''' Plots Bollinger band for series'''
 
