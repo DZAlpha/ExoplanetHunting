@@ -7,6 +7,7 @@ from scipy import signal
 from dataread import preprocess, get_train_df
 from BollingerBand import bollinger_band
 from fourier import FourierTransform
+from earthmover import *
 
 
 def fourier_outliers(fourier_df, right_index, span = 20, k = 3.5):
@@ -53,7 +54,7 @@ class Features:
         self.features['Fourier: Mean'] = self.dft.mean
         #self.features['Fourier outliers #1'] = self.dft.spikes
         self.features['Fourier: BB outliers'] = fourier_outliers(self.dft.fourier_df, right_index = int(self.dft.fourier_df.shape[1]/2))
-        
+        self.features['Earth mover distance'] = earth_mover_distance(self.df)
     def add_feature(self, fun, name, stand=False):
         if stand:
             self.features[name] = np.array(self.standarized_df.apply(lambda row: fun(row), axis=1))
