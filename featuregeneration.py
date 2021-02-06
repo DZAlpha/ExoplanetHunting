@@ -47,12 +47,12 @@ class Features:
         #bollinger band
         self.features['Flux BB Outliers'] = np.array(self.df.apply(lambda row: n_outliers(row), axis=1))
         idx = self.df.apply(lambda row: out_idx(row), axis=1)
-        self.features['STD of Flux BBand outliers'] = np.array(idx.apply(lambda row: d_std(row)))
-        self.features['Mean of Flux BBand outliers'] = np.array(idx.apply(lambda row: d_mean(row)))
+        self.features['STD of Flux BB outliers'] = np.array(idx.apply(lambda row: d_std(row)))
+        self.features['Mean of Flux BB outliers'] = np.array(idx.apply(lambda row: d_mean(row)))
         self.features['Fourier: STD'] = self.dft.std
         self.features['Fourier: Mean'] = self.dft.mean
         #self.features['Fourier outliers #1'] = self.dft.spikes
-        self.features['Fourier: BBand outliers'] = fourier_outliers(self.dft.fourier_df, right_index = int(self.dft.fourier_df.shape[1]/2))
+        self.features['Fourier: BB outliers'] = fourier_outliers(self.dft.fourier_df, right_index = int(self.dft.fourier_df.shape[1]/2))
         
     def add_feature(self, fun, name, stand=False):
         if stand:
