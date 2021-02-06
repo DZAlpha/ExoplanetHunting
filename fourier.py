@@ -26,7 +26,6 @@ class FourierTransform:
         self.calculate_mean(left_index = left_index)
         self.calculate_no_spikes()
                 
-        
     def calculate_no_spikes(self):
         '''
         Calculates number of spikes in each row of self.fourier_df and saves it to self.no_spikes.
