@@ -41,18 +41,18 @@ class Features:
         
         self.features = pd.DataFrame()
         self.features['Label'] = df.index.get_level_values(1)
-        self.features['Flux standard deviation'] = np.array(self.df.apply(lambda row: row.std(), axis = 1))
-        self.features['Flux variance'] = np.array(self.df.apply(lambda row: row.var(), axis = 1))
-        self.features['Flux mean'] = np.array(self.df.apply(lambda row: row.mean(), axis = 1))
+        self.features['Flux: STD'] = np.array(self.df.apply(lambda row: row.std(), axis = 1))
+        self.features['Flux: variance'] = np.array(self.df.apply(lambda row: row.var(), axis = 1))
+        self.features['Flux: mean'] = np.array(self.df.apply(lambda row: row.mean(), axis = 1))
         #bollinger band
-        self.features['Flux BB Outliers'] = np.array(self.df.apply(lambda row: n_outliers(row), axis=1))
+        self.features['Flux: No. BB Outliers'] = np.array(self.df.apply(lambda row: n_outliers(row), axis=1))
         idx = self.df.apply(lambda row: out_idx(row), axis=1)
-        self.features['STD of Flux BB outliers'] = np.array(idx.apply(lambda row: d_std(row)))
-        self.features['Mean of Flux BB outliers'] = np.array(idx.apply(lambda row: d_mean(row)))
+        self.features['Flux: STD of BB outliers'] = np.array(idx.apply(lambda row: d_std(row)))
+        self.features['Flux: mean of BB outliers'] = np.array(idx.apply(lambda row: d_mean(row)))
         self.features['Fourier: STD'] = self.dft.std
-        self.features['Fourier: Mean'] = self.dft.mean
+        self.features['Fourier: mean'] = self.dft.mean
         #self.features['Fourier outliers #1'] = self.dft.spikes
-        self.features['Fourier: BB outliers'] = fourier_outliers(self.dft.fourier_df, right_index = int(self.dft.fourier_df.shape[1]/2))
+        self.features['Fourier: No. BB outliers'] = fourier_outliers(self.dft.fourier_df, right_index = int(self.dft.fourier_df.shape[1]/2))
         
     def add_feature(self, fun, name, stand=False):
         if stand:
