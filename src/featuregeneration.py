@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy
 from scipy import signal
-from dataread import preprocess, get_train_df
-from BollingerBand import bollinger_band
-from fourier import FourierTransform
+from src.dataread import preprocess, get_train_df
+from src.BollingerBand import bollinger_band
+from src.fourier import FourierTransform
 
 
 def fourier_outliers(fourier_df, right_index, span = 20, k = 3.5):

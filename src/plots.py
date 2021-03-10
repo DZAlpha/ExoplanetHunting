@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from BollingerBand import *
+from src.BollingerBand import *
 
 def plot_fourier_transform(ft):
     n = len(ft)

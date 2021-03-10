@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from dataread import * 
 import matplotlib.pyplot as plt
+from src.dataread import * 
 
 
 def MA(series,span):

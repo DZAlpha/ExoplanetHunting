@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy
-from plots import plot_row
+from src.plots import plot_row
 
 class FourierTransform:
     def __init__(self, df, detrend = True, left_index = 10):
